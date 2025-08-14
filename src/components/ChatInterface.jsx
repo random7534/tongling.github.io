@@ -163,7 +163,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
           <div className="flex items-center">
             <i className="fas fa-user-secret text-spirit-gold text-xl mr-3"></i>
             <div>
-              <h3 className="text-white font-semibold">附身者: {gameConfig.character_name}</h3>
+              <h3 className="text-white font-semibold">神秘的附身者</h3>
               <p className="text-purple-200 text-sm">通过对话寻找线索，猜出真实身份</p>
             </div>
           </div>
