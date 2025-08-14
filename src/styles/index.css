@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+}
+
+.mystic-bg {
+  background: linear-gradient(135deg, rgba(107, 70, 193, 0.1) 0%, rgba(30, 64, 175, 0.1) 100%);
+  backdrop-filter: blur(10px);
+}
+
+.spirit-text {
+  background: linear-gradient(45deg, #F59E0B, #EF4444, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.message-bubble {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.typing-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #6B46C1;
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-indicator:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
