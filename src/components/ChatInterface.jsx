@@ -13,7 +13,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [chatClient, setChatClient] = useState(null);
-  const [sessionId, setSessionId] = useState(null);
+  const [conversationId, setConversationId] = useState(null);
   const [isFirstMessage, setIsFirstMessage] = useState(true);
   const messagesEndRef = useRef(null);
 
@@ -28,7 +28,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
     setChatClient(client);
 
     // 重置会话状态
-    setSessionId(null);
+    setConversationId(null);
     setIsFirstMessage(true);
     console.log('开始新游戏，角色:', gameConfig.character_name);
 
@@ -74,15 +74,15 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
       const requestParams = {
         query: userMessage.content,
         user: userId,
+        response_mode: 'streaming',
         inputs: {
           character: gameConfig.character_name
         }
       };
 
-      // 如果不是第一次对话且有sessionId，则添加会话ID
-      if (!isFirstMessage && sessionId) {
-        requestParams.sessionId = sessionId;
-        requestParams.inputs.conversation_id = sessionId;
+      // 如果不是第一次对话且有conversation_id，则添加会话ID
+      if (!isFirstMessage && conversationId) {
+        requestParams.conversation_id = conversationId;
         console.log('发送消息（续话）:', requestParams);
       } else {
         console.log('发送消息（首次）:', requestParams);
@@ -117,15 +117,15 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
           onMessageEnd: (event) => {
             setIsLoading(false);
             
-            // 如果是第一次对话，从响应中获取会话ID
-            if (isFirstMessage && event.sessionId) {
-              console.log('获取到会话ID:', event.sessionId);
-              setSessionId(event.sessionId);
+            // 如果是第一次对话，从响应中获取conversation_id
+            if (isFirstMessage && event.conversation_id) {
+              console.log('获取到会话ID:', event.conversation_id);
+              setConversationId(event.conversation_id);
               setIsFirstMessage(false);
             } else if (isFirstMessage) {
-              // 如果响应中没有sessionId，标记为非首次以避免重复处理
+              // 如果响应中没有conversation_id，标记为非首次以避免重复处理
               setIsFirstMessage(false);
-              console.log('首次对话完成，但未获取到sessionId');
+              console.log('首次对话完成，但未获取到conversation_id');
             }
             
             setMessages(prev => {
@@ -146,8 +146,8 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
                 userInput.includes(gameConfig.character_name) ||
                 userInput.replace(/\s+/g, '').includes(characterName.replace(/\s+/g, ''))) {
               // 游戏结束，清除会话ID
-              console.log('游戏结束，清除会话ID');
-              setSessionId(null);
+              console.log('游戏结束，清除conversation_id');
+              setConversationId(null);
               setIsFirstMessage(true);
               setTimeout(() => {
                 onGameComplete();
