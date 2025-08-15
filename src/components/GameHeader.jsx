@@ -28,7 +28,7 @@ const GameHeader = () => {
         </div>
         <div className="flex items-center">
           <i className="fas fa-comments text-spirit-gold mr-2"></i>
-          <span>智慧对话</span>
+          <span>AI对话</span>
         </div>
         <div className="flex items-center">
           <i className="fas fa-lightbulb text-spirit-gold mr-2"></i>
