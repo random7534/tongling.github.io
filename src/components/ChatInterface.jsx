@@ -70,10 +70,40 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
       const userConfig = (window.ONEDAY_CONFIG || window.parent.ONEDAY_CONFIG);
       const userId = userConfig?.user?.workid || 'anonymous';
 
+      // 统一的人名检测函数
+      const checkPersonNameMatch = (userInput, characterName) => {
+        const input = userInput.toLowerCase().trim();
+        const name = characterName.toLowerCase().trim();
+        
+        console.log('匹配检测 - 输入:', userInput, '目标:', characterName);
+        console.log('转换后 - 输入:', input, '目标:', name);
+        
+        // 精确匹配
+        if (input === name) {
+          console.log('精确匹配成功');
+          return true;
+        }
+        
+        // 包含匹配
+        if (input.includes(name)) {
+          console.log('包含匹配成功');
+          return true;
+        }
+        
+        // 去空格匹配
+        const inputNoSpace = input.replace(/\s+/g, '');
+        const nameNoSpace = name.replace(/\s+/g, '');
+        if (inputNoSpace.includes(nameNoSpace)) {
+          console.log('去空格匹配成功');
+          return true;
+        }
+        
+        console.log('所有匹配都失败');
+        return false;
+      };
+      
       // 检测用户输入是否包含人名
-      const userInput = userMessage.content.toLowerCase();
-      const characterName = gameConfig.character_name.toLowerCase();
-      const containsPersonName = userInput.includes(characterName);
+      const containsPersonName = checkPersonNameMatch(userMessage.content, gameConfig.character_name);
       
       if (containsPersonName) {
         console.log('检测到人名:', gameConfig.character_name);
@@ -148,13 +178,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
             });
 
             // 检查用户输入是否包含角色名称，判断游戏是否结束
-            const userInput = userMessage.content.toLowerCase();
-            const characterName = gameConfig.character_name.toLowerCase();
-            
-            // 更精确的名字匹配，支持部分匹配和全名匹配
-            if (userInput.includes(characterName) || 
-                userInput.includes(gameConfig.character_name) ||
-                userInput.replace(/\s+/g, '').includes(characterName.replace(/\s+/g, ''))) {
+            if (checkPersonNameMatch(userMessage.content, gameConfig.character_name)) {
               // 游戏结束，清除会话ID
               console.log('游戏结束，清除conversation_id');
               setConversationId(null);
