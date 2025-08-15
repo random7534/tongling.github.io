@@ -1,7 +1,7 @@
 /**
  * 聊天界面组件
- * 应用标识: f6e2feb1-ba8e-4903-8d92-c6dbec98bda1
- * 功能: 实现与AI附身者的对话交互，使用OneDay Workflow SDK
+ * 应用标识: 7b07f649-6197-421d-8513-a65e74792267
+ * 功能: 实现与AI附身者的对话交互，使用OneDay Workflow SDK进行历史人物猜测
  */
 import React, { useState, useEffect, useRef } from 'react';
 import { ChatClient } from '@ali/oneday-workflow-sdk';
@@ -19,7 +19,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
     // 初始化聊天客户端
     const client = new ChatClient({
       headers: {
-        Authorization: 'f6e2feb1-ba8e-4903-8d92-c6dbec98bda1',
+        Authorization: '7b07f649-6197-421d-8513-a65e74792267',
       },
       baseUrl: 'https://1d.alibaba-inc.com/api/proxy/workflow/v1',
     });
@@ -29,7 +29,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
     const initialMessage = {
       id: Date.now(),
       type: 'ai',
-      content: '大师，我好像被亡灵附身了，说出真名他才能离去，求求你帮帮我。',
+      content: '在这片被时光尘封的记忆里，一道身影静候千年，只待你轻轻叩问——\n\n用智慧拨开迷雾，猜猜我是谁？🤫',
       timestamp: new Date()
     };
     setMessages([initialMessage]);
@@ -68,10 +68,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
           query: userMessage.content,
           user: userId,
           inputs: {
-            character_name: gameConfig.character_name,
-            character_background: gameConfig.character_background,
-            character_personality: gameConfig.character_personality,
-            character_achievements: gameConfig.character_achievements
+            character: gameConfig.character_name
           }
         },
         {
@@ -109,8 +106,11 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
               return newMessages;
             });
 
-            // 检查是否游戏结束
-            if (fullAnswer.includes('感谢') && fullAnswer.includes('大师')) {
+            // 检查用户输入是否包含角色名称，判断游戏是否结束
+            const userInput = userMessage.content.toLowerCase();
+            const characterName = gameConfig.character_name.toLowerCase();
+            
+            if (userInput.includes(characterName)) {
               setTimeout(() => {
                 onGameComplete();
               }, 2000);
