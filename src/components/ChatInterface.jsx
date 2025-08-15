@@ -26,9 +26,10 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
     });
     setChatClient(client);
 
-    // 生成新的会话ID
-    const newSessionId = `spirit_game_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    // 生成新的会话ID，使用更简单的格式
+    const newSessionId = `${gameConfig.character_name}_${Date.now()}`;
     setSessionId(newSessionId);
+    console.log('创建新会话:', newSessionId, '角色:', gameConfig.character_name);
 
     // 添加初始消息
     const initialMessage = {
@@ -68,17 +69,27 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
       const userConfig = (window.ONEDAY_CONFIG || window.parent.ONEDAY_CONFIG);
       const userId = userConfig?.user?.workid || 'anonymous';
 
+      console.log('发送消息:', {
+        query: userMessage.content,
+        user: userId,
+        sessionId: sessionId,
+        character: gameConfig.character_name
+      });
+
       await chatClient.sendMessageStream(
         {
           query: userMessage.content,
           user: userId,
-          sessionId: sessionId,  // 添加会话ID保持上下文
+          sessionId: sessionId,  // 使用标准的sessionId参数
           inputs: {
-            character: gameConfig.character_name
+            character: gameConfig.character_name,
+            conversation_id: sessionId,  // 在inputs中也传递会话ID
+            history_context: messages.filter(m => m.type === 'user' || m.type === 'ai').map(m => `${m.type}: ${m.content}`).join('\n')  // 显式传递历史对话
           }
         },
         {
           onMessage: (event) => {
+            console.log('收到AI回复片段:', event.answer);
             fullAnswer += event.answer;
             
             setMessages(prev => {
