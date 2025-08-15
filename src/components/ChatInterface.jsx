@@ -70,22 +70,32 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
       const userConfig = (window.ONEDAY_CONFIG || window.parent.ONEDAY_CONFIG);
       const userId = userConfig?.user?.workid || 'anonymous';
 
+      // 检测用户输入是否包含人名
+      const userInput = userMessage.content.toLowerCase();
+      const characterName = gameConfig.character_name.toLowerCase();
+      const containsPersonName = userInput.includes(characterName);
+      
+      if (containsPersonName) {
+        console.log('检测到人名:', gameConfig.character_name);
+      }
+      
       // 构建请求参数
       const requestParams = {
         query: userMessage.content,
         user: userId,
         response_mode: 'streaming',
         inputs: {
-          character: gameConfig.character_name
+          character: gameConfig.character_name,
+          guess_flag: containsPersonName
         }
       };
 
       // 如果不是第一次对话且有conversation_id，则添加会话ID
       if (!isFirstMessage && conversationId) {
         requestParams.conversation_id = conversationId;
-        console.log('发送消息（续话）:', requestParams);
+        console.log('发送消息（续话）:', requestParams, '猜测标志:', containsPersonName);
       } else {
-        console.log('发送消息（首次）:', requestParams);
+        console.log('发送消息（首次）:', requestParams, '猜测标志:', containsPersonName);
       }
 
       await chatClient.sendMessageStream(
