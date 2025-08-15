@@ -86,7 +86,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
         response_mode: 'streaming',
         inputs: {
           character: gameConfig.character_name,
-          guess_flag: containsPersonName
+          guess_flag: containsPersonName.toString()
         }
       };
 
