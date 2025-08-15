@@ -13,6 +13,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [chatClient, setChatClient] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -25,6 +26,10 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
     });
     setChatClient(client);
 
+    // 生成新的会话ID
+    const newSessionId = `spirit_game_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    setSessionId(newSessionId);
+
     // 添加初始消息
     const initialMessage = {
       id: Date.now(),
@@ -33,7 +38,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
       timestamp: new Date()
     };
     setMessages([initialMessage]);
-  }, []);
+  }, [gameConfig]);  // 添加gameConfig依赖，确保每次新游戏都创建新会话
 
   useEffect(() => {
     scrollToBottom();
@@ -44,7 +49,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
   };
 
   const sendMessage = async () => {
-    if (!inputValue.trim() || isLoading || !chatClient) return;
+    if (!inputValue.trim() || isLoading || !chatClient || !sessionId) return;
 
     const userMessage = {
       id: Date.now(),
@@ -67,6 +72,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
         {
           query: userMessage.content,
           user: userId,
+          sessionId: sessionId,  // 添加会话ID保持上下文
           inputs: {
             character: gameConfig.character_name
           }
@@ -110,7 +116,10 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
             const userInput = userMessage.content.toLowerCase();
             const characterName = gameConfig.character_name.toLowerCase();
             
-            if (userInput.includes(characterName)) {
+            // 更精确的名字匹配，支持部分匹配和全名匹配
+            if (userInput.includes(characterName) || 
+                userInput.includes(gameConfig.character_name) ||
+                userInput.replace(/\s+/g, '').includes(characterName.replace(/\s+/g, ''))) {
               setTimeout(() => {
                 onGameComplete();
               }, 2000);
