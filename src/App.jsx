@@ -7,313 +7,307 @@ const App = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameCompleted, setGameCompleted] = useState(false);
 
-  // 后台预设的随机角色池 - 50位中国古代名人
+  // 后台预设的随机角色池 - 50位相对不常见但有历史关联的中国古代人物
   const hiddenCharacters = [
     {
-      character_name: '李白',
-      character_background: '唐代伟大的浪漫主义诗人，被誉为"诗仙"，一生游历四方，性格豪放不羁',
-      character_personality: '豪放洒脱，热爱自由，喜欢饮酒作诗，性格直率真诚，有着浪漫主义情怀',
-      character_achievements: '创作了《将进酒》《蜀道难》《静夜思》等千古名篇，对后世诗歌影响深远'
+      character_name: '曹丕',
+      character_background: '三国时期魏国开国皇帝，曹操长子，文学家，建安文学代表人物',
+      character_personality: '聪明多疑，文学才华出众，政治手腕高超，有着帝王的威严',
+      character_achievements: '建立魏朝，推行九品中正制，著有《典论·论文》，开创文学批评先河'
     },
     {
-      character_name: '诸葛亮',
-      character_background: '三国时期蜀汉丞相，杰出的政治家、军事家、文学家，被誉为"卧龙"',
-      character_personality: '智慧超群，忠诚正直，谨慎细致，有着强烈的责任感和使命感',
-      character_achievements: '辅佐刘备建立蜀汉，发明木牛流马，七擒孟获，六出祁山，鞠躬尽瘁死而后已'
+      character_name: '苏辙',
+      character_background: '北宋文学家，苏轼之弟，"唐宋八大家"之一，与父兄并称"三苏"',
+      character_personality: '性格沉稳，文风朴实，思维缜密，有着学者的严谨',
+      character_achievements: '与兄长苏轼齐名，著有《栾城集》，在散文创作上独树一帜'
     },
     {
-      character_name: '武则天',
-      character_background: '中国历史上唯一的女皇帝，唐朝政治家，在位期间国力强盛',
-      character_personality: '聪明果断，有政治手腕，敢于打破传统，意志坚强，善于用人',
-      character_achievements: '建立武周王朝，推行科举制度，发展经济文化，开创了"贞观遗风"'
+      character_name: '司马昭',
+      character_background: '三国时期魏国权臣，司马懿次子，西晋王朝奠基者',
+      character_personality: '野心勃勃，城府深沉，善于权谋，有着政治家的狡黠',
+      character_achievements: '掌控魏国朝政，为儿子司马炎建立西晋奠定基础，"司马昭之心路人皆知"'
     },
     {
-      character_name: '孔子',
-      character_background: '春秋时期思想家、教育家，儒家学派创始人，被尊为"至圣先师"',
-      character_personality: '温文尔雅，博学谦逊，重视礼仪和道德修养，有教无类的教育理念',
-      character_achievements: '创立儒家思想体系，编订《诗》《书》《礼》《易》《春秋》，影响中华文明数千年'
+      character_name: '王献之',
+      character_background: '东晋书法家，王羲之第七子，与父并称"二王"',
+      character_personality: '才华横溢，性格张扬，追求创新，有着艺术家的个性',
+      character_achievements: '创立"破体"书法，代表作《中秋帖》，在书法史上与父齐名'
     },
     {
-      character_name: '苏轼',
-      character_background: '北宋文学家、书法家、画家，豪放派词人代表，官场几经沉浮',
-      character_personality: '乐观豁达，才华横溢，热爱生活，面对挫折依然保持积极心态',
-      character_achievements: '创作《水调歌头》《念奴娇·赤壁怀古》等名篇，在诗词书画方面都有很高成就'
+      character_name: '李贺',
+      character_background: '唐代诗人，被称为"诗鬼"，以奇诡浪漫的诗风著称',
+      character_personality: '性格孤僻，想象奇特，才华早现，有着诗人的敏感',
+      character_achievements: '创作《雁门太守行》《李凭箜篌引》等奇诡之作，开创独特诗风'
     },
     {
-      character_name: '岳飞',
-      character_background: '南宋抗金名将，精忠报国的民族英雄，被誉为"武圣"',
-      character_personality: '忠诚爱国，英勇善战，品格高尚，有强烈的民族责任感',
-      character_achievements: '率领岳家军抗击金军，收复大片失地，留下"精忠报国"的千古佳话'
+      character_name: '颜真卿',
+      character_background: '唐代书法家、政治家，楷书四大家之一，忠臣典范',
+      character_personality: '刚正不阿，忠诚爱国，书法雄浑，有着文人的气节',
+      character_achievements: '创立"颜体"楷书，代表作《祭侄文稿》，被誉为"天下第二行书"'
     },
     {
-      character_name: '杜甫',
-      character_background: '唐代现实主义诗人，被誉为"诗圣"，一生颠沛流离，关心民生疾苦',
-      character_personality: '忧国忧民，严谨治学，品格高尚，有强烈的社会责任感',
-      character_achievements: '创作《三吏》《三别》等现实主义名篇，被誉为"诗史"'
+      character_name: '柳永',
+      character_background: '北宋词人，婉约派代表，第一个专力写词的文人',
+      character_personality: '风流倜傥，多愁善感，善解人意，有着词人的浪漫',
+      character_achievements: '创作《雨霖铃》《八声甘州》等名篇，开创慢词先河'
     },
     {
-      character_name: '秦始皇',
-      character_background: '中国历史上第一个皇帝，统一六国，建立秦朝，开创帝制',
-      character_personality: '雄才大略，意志坚强，追求统一，有强烈的权力欲望',
-      character_achievements: '统一文字、货币、度量衡，修建万里长城，建立中央集权制度'
+      character_name: '晏殊',
+      character_background: '北宋词人、政治家，晏几道之父，"宰相词人"',
+      character_personality: '温文尔雅，才华出众，政治敏锐，有着贵族的气质',
+      character_achievements: '创作《浣溪沙》等经典词作，培养了欧阳修等文学大家'
     },
     {
-      character_name: '老子',
-      character_background: '春秋时期思想家，道家学派创始人，被尊为"太上老君"',
-      character_personality: '淡泊名利，崇尚自然，追求无为而治，有着深邃的哲学思维',
-      character_achievements: '著《道德经》，提出"道法自然"思想，影响中华文明和世界哲学'
+      character_name: '晏几道',
+      character_background: '北宋词人，晏殊之子，婉约派重要代表，"小山词"作者',
+      character_personality: '性格孤傲，情感丰富，不慕荣利，有着词人的清高',
+      character_achievements: '创作《临江仙》《鹧鸪天》等名篇，词风清丽婉约'
     },
     {
-      character_name: '庄子',
-      character_background: '战国时期思想家，道家学派重要代表，追求精神自由',
-      character_personality: '超脱世俗，想象丰富，幽默风趣，有着浪漫主义色彩',
-      character_achievements: '著《庄子》，提出"逍遥游"思想，对后世文学哲学影响深远'
+      character_name: '秦观',
+      character_background: '北宋词人，"苏门四学士"之一，婉约派代表人物',
+      character_personality: '多愁善感，才华横溢，性格内向，有着文人的忧郁',
+      character_achievements: '创作《鹊桥仙》《淮海词》等名作，被誉为"婉约之宗"'
     },
     {
-      character_name: '孟子',
-      character_background: '战国时期思想家，儒家学派重要代表，被尊为"亚圣"',
-      character_personality: '仁爱善良，坚持正义，雄辩滔滔，有着强烈的道德理想',
-      character_achievements: '发展儒家思想，提出"民贵君轻"，著《孟子》传世'
+      character_name: '黄庭坚',
+      character_background: '北宋诗人、书法家，"苏门四学士"之一，江西诗派开山祖师',
+      character_personality: '学识渊博，性格耿直，追求创新，有着学者的执着',
+      character_achievements: '创立"江西诗派"，书法自成一体，与苏轼并称"苏黄"'
     },
     {
-      character_name: '司马迁',
-      character_background: '西汉史学家、文学家，著《史记》，被誉为"史圣"',
-      character_personality: '严谨治学，坚韧不拔，秉笔直书，有着史学家的使命感',
-      character_achievements: '著《史记》，开创纪传体史书先河，被誉为"史家之绝唱"'
+      character_name: '米芾',
+      character_background: '北宋书法家、画家，"宋四家"之一，以"米颠"著称',
+      character_personality: '性格怪异，洁癖严重，艺术天赋极高，有着艺术家的癫狂',
+      character_achievements: '创立"米体"书法，擅长山水画，收藏鉴赏能力超群'
     },
     {
-      character_name: '曹操',
-      character_background: '东汉末年政治家、军事家、文学家，三国时期魏国奠基者',
-      character_personality: '雄才大略，多疑善变，爱才如命，有着强烈的政治野心',
-      character_achievements: '统一北方，奠定魏国基业，著有《观沧海》等诗篇'
+      character_name: '蔡襄',
+      character_background: '北宋书法家、政治家，"宋四家"之一，茶学专家',
+      character_personality: '品格高尚，学识广博，书法精湛，有着君子的风范',
+      character_achievements: '书法承上启下，著有《茶录》，主持建造洛阳桥'
     },
     {
-      character_name: '刘备',
-      character_background: '三国时期蜀汉开国皇帝，以仁德著称，礼贤下士',
-      character_personality: '仁慈宽厚，坚韧不拔，善于用人，有着王者风范',
-      character_achievements: '建立蜀汉政权，与诸葛亮君臣相得，演绎三顾茅庐佳话'
+      character_name: '李清照',
+      character_background: '南宋女词人，"千古第一才女"，婉约派代表',
+      character_personality: '才华横溢，性格坚强，情感丰富，有着女性的细腻',
+      character_achievements: '创作《声声慢》《如梦令》等名篇，开创女性词风'
     },
     {
-      character_name: '关羽',
-      character_background: '三国时期蜀汉名将，被誉为"武圣"，忠义的化身',
-      character_personality: '忠诚义气，勇猛善战，傲气十足，有着强烈的道德操守',
-      character_achievements: '过五关斩六将，单刀赴会，被后世尊为"关公"'
+      character_name: '姜夔',
+      character_background: '南宋词人、音乐家，格律派鼻祖，"白石道人"',
+      character_personality: '清高孤傲，音律精通，追求完美，有着艺术家的执着',
+      character_achievements: '创作《扬州慢》等名篇，精通音律，自度曲谱传世'
     },
     {
-      character_name: '唐太宗',
-      character_background: '唐朝第二位皇帝，开创"贞观之治"，被誉为千古明君',
-      character_personality: '英明果断，虚怀若谷，善于纳谏，有着开明的治国理念',
-      character_achievements: '开创贞观之治，奠定唐朝盛世基础，被誉为"天可汗"'
+      character_name: '周邦彦',
+      character_background: '北宋词人，格律派集大成者，"词中老杜"',
+      character_personality: '严谨细致，追求完美，学识渊博，有着匠人的精神',
+      character_achievements: '完善词的格律，创作《兰陵王》等名篇，影响后世词坛'
     },
     {
-      character_name: '王羲之',
-      character_background: '东晋书法家，被誉为"书圣"，书法艺术的集大成者',
-      character_personality: '淡泊名利，追求艺术，性情高雅，有着艺术家的气质',
-      character_achievements: '创作《兰亭序》，被誉为"天下第一行书"，影响后世书法千年'
+      character_name: '元好问',
+      character_background: '金代文学家，"金代文学第一人"，文学批评家',
+      character_personality: '学识渊博，品格高尚，忧国忧民，有着文人的担当',
+      character_achievements: '著《论诗绝句》，保存金代文献，开创文学批评新风'
     },
     {
-      character_name: '陶渊明',
-      character_background: '东晋诗人，田园诗派鼻祖，不为五斗米折腰的典型',
-      character_personality: '淡泊名利，热爱自然，追求自由，有着隐士的风骨',
-      character_achievements: '创作《桃花源记》《归园田居》等名篇，开创田园诗风'
+      character_name: '赵孟頫',
+      character_background: '元代书法家、画家，"元四家"之一，宋朝皇室后裔',
+      character_personality: '才华全面，适应能力强，追求艺术，有着贵族的修养',
+      character_achievements: '书法集各家之长，绘画开创新风，被誉为"文人画"典范'
     },
     {
-      character_name: '白居易',
-      character_background: '唐代现实主义诗人，新乐府运动倡导者，关注民生',
-      character_personality: '平易近人，关心民众，文风朴实，有着强烈的社会责任感',
-      character_achievements: '创作《长恨歌》《琵琶行》等名篇，提倡"文章合为时而著"'
+      character_name: '白朴',
+      character_background: '元代戏曲家，"元曲四大家"之一，《梧桐雨》作者',
+      character_personality: '才华横溢，性格内向，不慕荣利，有着文人的清高',
+      character_achievements: '创作《墙头马上》《梧桐雨》等经典剧目'
     },
     {
-      character_name: '韩愈',
-      character_background: '唐代文学家，古文运动倡导者，被誉为"文起八代之衰"',
-      character_personality: '刚正不阿，学识渊博，文风雄健，有着文人的傲骨',
-      character_achievements: '倡导古文运动，著《师说》等名篇，对后世文学影响深远'
+      character_name: '郑光祖',
+      character_background: '元代戏曲家，"元曲四大家"之一，《倩女离魂》作者',
+      character_personality: '情感丰富，善于刻画，文思敏捷，有着戏曲家的敏感',
+      character_achievements: '创作《倩女离魂》等爱情剧，擅长描写儿女情长'
     },
     {
-      character_name: '柳宗元',
-      character_background: '唐代文学家，古文运动重要人物，"唐宋八大家"之一',
-      character_personality: '才华横溢，性格刚直，关心政治，有着改革家的理想',
-      character_achievements: '创作《永州八记》《捕蛇者说》等名篇，推动古文运动'
+      character_name: '王实甫',
+      character_background: '元代戏曲家，《西厢记》作者，元杂剧的集大成者',
+      character_personality: '才华横溢，善于创新，情感细腻，有着剧作家的天赋',
+      character_achievements: '创作《西厢记》，被誉为"天下夺魁"，影响后世戏曲'
     },
     {
-      character_name: '范仲淹',
-      character_background: '北宋政治家、文学家，"先天下之忧而忧"的典型',
-      character_personality: '忧国忧民，刚正不阿，胸怀天下，有着强烈的使命感',
-      character_achievements: '推行庆历新政，著《岳阳楼记》，体现"先忧后乐"精神'
+      character_name: '汤显祖',
+      character_background: '明代戏曲家，"临川四梦"作者，中国戏曲史上的巨匠',
+      character_personality: '浪漫主义，情感丰富，追求理想，有着文学家的情怀',
+      character_achievements: '创作《牡丹亭》等"临川四梦"，开创浪漫主义戏曲'
     },
     {
-      character_name: '欧阳修',
-      character_background: '北宋文学家、史学家，"唐宋八大家"之一，文坛领袖',
-      character_personality: '博学多才，提携后进，文风清新，有着文学家的风范',
-      character_achievements: '主持修《新唐书》，创作《醉翁亭记》等名篇'
+      character_name: '冯梦龙',
+      character_background: '明代文学家，"三言"编者，通俗文学的推广者',
+      character_personality: '平易近人，关心民众，文学眼光独到，有着编辑家的慧眼',
+      character_achievements: '编辑"三言"，推广通俗文学，保存大量民间故事'
     },
     {
-      character_name: '王安石',
-      character_background: '北宋政治家、文学家，变法改革的倡导者',
-      character_personality: '意志坚强，锐意改革，学识渊博，有着改革家的魄力',
-      character_achievements: '推行王安石变法，著《泊船瓜洲》等诗篇'
+      character_name: '凌濛初',
+      character_background: '明代文学家，"二拍"作者，与冯梦龙并称',
+      character_personality: '才思敏捷，善于叙事，关注现实，有着小说家的洞察力',
+      character_achievements: '创作"二拍"，与"三言"并称"三言二拍"'
     },
     {
-      character_name: '司马光',
-      character_background: '北宋史学家、政治家，主编《资治通鉴》',
-      character_personality: '严谨治学，品格高尚，保守稳重，有着史学家的操守',
-      character_achievements: '主编《资治通鉴》，为中国史学做出重大贡献'
+      character_name: '蒲松龄',
+      character_background: '清代小说家，《聊斋志异》作者，"世界短篇小说之王"',
+      character_personality: '想象丰富，同情弱者，文笔优美，有着小说家的同情心',
+      character_achievements: '创作《聊斋志异》，开创文言短篇小说新境界'
     },
     {
-      character_name: '辛弃疾',
-      character_background: '南宋词人，豪放派代表，抗金复国的志士',
-      character_personality: '豪放激昂，忧国忧民，武艺高强，有着英雄气概',
-      character_achievements: '创作《永遇乐·京口北固亭怀古》等豪放词篇'
+      character_name: '吴敬梓',
+      character_background: '清代小说家，《儒林外史》作者，讽刺小说大师',
+      character_personality: '幽默讽刺，洞察人性，批判精神强，有着讽刺家的锐利',
+      character_achievements: '创作《儒林外史》，开创讽刺小说先河'
     },
     {
-      character_name: '陆游',
-      character_background: '南宋诗人，爱国主义诗人的典型，一生忧国忧民',
-      character_personality: '爱国热忱，坚韧不拔，文思敏捷，有着诗人的情怀',
-      character_achievements: '创作《示儿》《游山西村》等爱国诗篇，诗作九千余首'
+      character_name: '袁枚',
+      character_background: '清代诗人、文学家，"性灵派"代表，美食家',
+      character_personality: '性情豪放，追求自由，热爱生活，有着文人的洒脱',
+      character_achievements: '倡导"性灵说"，著《随园诗话》《随园食单》'
     },
     {
-      character_name: '朱熹',
-      character_background: '南宋理学家，程朱理学集大成者，被尊为"朱子"',
-      character_personality: '严谨治学，品德高尚，理性思辨，有着哲学家的深度',
-      character_achievements: '集理学之大成，注释《四书》，影响后世教育千年'
+      character_name: '龚自珍',
+      character_background: '清代思想家、文学家，近代启蒙思想先驱',
+      character_personality: '思想激进，忧国忧民，才华横溢，有着改革家的锐气',
+      character_achievements: '创作《己亥杂诗》，提出"更法"思想，影响维新运动'
     },
     {
-      character_name: '文天祥',
-      character_background: '南宋末年政治家、文学家，民族英雄，忠贞不屈',
-      character_personality: '忠诚爱国，宁死不屈，品格高尚，有着烈士的精神',
-      character_achievements: '抗元殉国，留下《正气歌》《过零丁洋》等千古绝唱'
+      character_name: '魏源',
+      character_background: '清代思想家、史学家，"师夷长技以制夷"提出者',
+      character_personality: '开明进步，学识渊博，忧患意识强，有着思想家的远见',
+      character_achievements: '著《海国图志》，提出向西方学习，开启洋务思潮'
     },
     {
-      character_name: '成吉思汗',
-      character_background: '蒙古帝国创建者，世界历史上杰出的军事家和政治家',
-      character_personality: '雄才大略，勇猛善战，统一蒙古，有着征服者的野心',
-      character_achievements: '统一蒙古各部，建立横跨欧亚的蒙古帝国'
+      character_name: '严复',
+      character_background: '清末思想家、翻译家，"信达雅"翻译标准提出者',
+      character_personality: '学贯中西，思想深邃，治学严谨，有着学者的风范',
+      character_achievements: '翻译《天演论》等西学名著，传播进化论思想'
     },
     {
-      character_name: '忽必烈',
-      character_background: '元朝开国皇帝，蒙古帝国第五代大汗，统一中国',
-      character_personality: '雄才大略，善于治国，重视汉文化，有着统治者的智慧',
-      character_achievements: '建立元朝，统一中国，促进中外文化交流'
+      character_name: '梁启超',
+      character_background: '近代思想家、政治家、教育家，维新运动领袖',
+      character_personality: '思想活跃，文笔犀利，爱国热忱，有着启蒙者的激情',
+      character_achievements: '推动戊戌变法，创办《时务报》，影响近代中国'
     },
     {
-      character_name: '关汉卿',
-      character_background: '元代戏曲家，"元曲四大家"之首，被誉为"曲圣"',
-      character_personality: '才华横溢，关心民众，敢于批判，有着戏曲家的情怀',
-      character_achievements: '创作《窦娥冤》等经典剧目，推动元曲发展'
+      character_name: '谭嗣同',
+      character_background: '近代思想家、政治家，戊戌六君子之一，维新志士',
+      character_personality: '思想激进，勇于牺牲，品格高尚，有着烈士的精神',
+      character_achievements: '参与戊戌变法，著《仁学》，为变法流血牺牲'
     },
     {
-      character_name: '马致远',
-      character_background: '元代戏曲家、散曲家，"元曲四大家"之一',
-      character_personality: '淡泊名利，向往自然，文思敏捷，有着文人的雅致',
-      character_achievements: '创作《天净沙·秋思》等经典散曲，被誉为"秋思之祖"'
+      character_name: '康有为',
+      character_background: '近代思想家、政治家，维新运动领袖，"南海先生"',
+      character_personality: '学识渊博，思想超前，组织能力强，有着改革家的魄力',
+      character_achievements: '发起公车上书，推动戊戌变法，著《大同书》'
     },
     {
-      character_name: '朱元璋',
-      character_background: '明朝开国皇帝，从乞丐到皇帝的传奇人物',
-      character_personality: '意志坚强，多疑善变，勤政爱民，有着开国君主的魄力',
-      character_achievements: '推翻元朝，建立明朝，恢复汉族政权'
+      character_name: '章太炎',
+      character_background: '近代思想家、史学家，国学大师，革命家',
+      character_personality: '学问渊博，性格刚烈，民族意识强，有着学者的傲骨',
+      character_achievements: '参与辛亥革命，整理国学，培养大批学者'
     },
     {
-      character_name: '郑和',
-      character_background: '明代航海家，七下西洋的伟大探险家',
-      character_personality: '勇敢无畏，善于外交，组织能力强，有着探险家的精神',
-      character_achievements: '七下西洋，促进中外交流，展现明朝国威'
+      character_name: '王国维',
+      character_background: '近代学者、文学家，国学大师，"人间词话"作者',
+      character_personality: '治学严谨，学贯中西，性格内向，有着学者的执着',
+      character_achievements: '著《人间词话》，开创词学批评新境界，精通甲骨文'
     },
     {
-      character_name: '于谦',
-      character_background: '明代政治家、军事家，"土木堡之变"后的救国英雄',
-      character_personality: '忠诚爱国，刚正不阿，临危不惧，有着民族英雄的气概',
-      character_achievements: '保卫北京，挽救明朝，留下《石灰吟》表明心志'
+      character_name: '辜鸿铭',
+      character_background: '近代学者、翻译家，精通多国语言的"文化怪杰"',
+      character_personality: '学贯中西，性格怪异，文化保守，有着文人的执拗',
+      character_achievements: '翻译《论语》《中庸》等经典，向西方介绍中国文化'
     },
     {
-      character_name: '王阳明',
-      character_background: '明代思想家、军事家，心学集大成者',
-      character_personality: '博学深思，知行合一，品格高尚，有着哲学家的智慧',
-      character_achievements: '创立心学，提出"知行合一"思想，影响后世深远'
+      character_name: '黄遵宪',
+      character_background: '近代诗人、外交家，"诗界革命"倡导者',
+      character_personality: '开明进步，才华横溢，外交经验丰富，有着诗人的敏感',
+      character_achievements: '创作《人境庐诗草》，推动诗歌革新，记录时代变迁'
     },
     {
-      character_name: '海瑞',
-      character_background: '明代政治家，以清廉刚正著称，被誉为"海青天"',
-      character_personality: '刚正不阿，清廉自守，敢于直谏，有着清官的风骨',
-      character_achievements: '为官清廉，敢于上疏批评皇帝，体现"海青天"精神'
+      character_name: '丘逢甲',
+      character_background: '近代诗人、教育家，台湾抗日志士',
+      character_personality: '爱国热忱，文学才华出众，教育理念先进，有着志士的气节',
+      character_achievements: '领导台湾抗日，创办新式学校，诗作反映民族情怀'
     },
     {
-      character_name: '李时珍',
-      character_background: '明代医药学家，《本草纲目》作者，被誉为"药圣"',
-      character_personality: '严谨治学，勤奋好学，关心民众健康，有着医者仁心',
-      character_achievements: '著《本草纲目》，为中医药学做出重大贡献'
+      character_name: '夏完淳',
+      character_background: '明末少年英雄，抗清志士，17岁就义',
+      character_personality: '少年老成，忠贞不屈，文学天赋极高，有着少年的纯真',
+      character_achievements: '年少抗清，诗文并茂，体现民族气节和少年英雄气概'
     },
     {
-      character_name: '徐霞客',
-      character_background: '明代地理学家、旅行家，中国古代最伟大的旅行家',
-      character_personality: '勇于探索，不畏艰险，热爱自然，有着探险家的精神',
-      character_achievements: '著《徐霞客游记》，为中国地理学做出重要贡献'
+      character_name: '顾炎武',
+      character_background: '明末清初思想家、史学家，"天下兴亡，匹夫有责"提出者',
+      character_personality: '学识渊博，品格高尚，忧国忧民，有着学者的担当',
+      character_achievements: '著《日知录》，提出经世致用思想，影响后世学风'
     },
     {
-      character_name: '施耐庵',
-      character_background: '元末明初小说家，《水浒传》作者',
-      character_personality: '才华横溢，关心民众，善于刻画人物，有着小说家的想象力',
-      character_achievements: '创作《水浒传》，塑造了众多英雄形象'
+      character_name: '黄宗羲',
+      character_background: '明末清初思想家、史学家，"中国思想启蒙之父"',
+      character_personality: '思想深邃，批判精神强，学问渊博，有着思想家的锐利',
+      character_achievements: '著《明夷待访录》，批判君主专制，开启民主思想'
     },
     {
-      character_name: '罗贯中',
-      character_background: '元末明初小说家，《三国演义》作者',
-      character_personality: '博学多才，善于叙事，熟悉历史，有着史学家的功底',
-      character_achievements: '创作《三国演义》，成为中国古典小说的经典'
+      character_name: '王夫之',
+      character_background: '明末清初思想家、哲学家，"船山先生"',
+      character_personality: '思辨能力强，学问深厚，隐居治学，有着哲学家的深度',
+      character_achievements: '著《读通鉴论》等，发展唯物主义思想，影响后世哲学'
     },
     {
-      character_name: '吴承恩',
-      character_background: '明代小说家，《西游记》作者',
-      character_personality: '想象丰富，幽默风趣，富有创造力，有着浪漫主义色彩',
-      character_achievements: '创作《西游记》，塑造了孙悟空等经典形象'
+      character_name: '侯方域',
+      character_background: '明末清初文学家，"明末四公子"之一，与李香君的爱情故事',
+      character_personality: '风流倜傥，才华横溢，重情重义，有着文人的浪漫',
+      character_achievements: '文学才华出众，与李香君的爱情被传为佳话'
     },
     {
-      character_name: '曹雪芹',
-      character_background: '清代小说家，《红楼梦》作者，中国古典小说巅峰之作的创造者',
-      character_personality: '才华横溢，细腻敏感，深谙人情世故，有着文学家的洞察力',
-      character_achievements: '创作《红楼梦》，被誉为中国古典小说的巅峰之作'
+      character_name: '钱谦益',
+      character_background: '明末清初文学家，"虞山诗派"领袖，柳如是之夫',
+      character_personality: '学识渊博，但品格复杂，文学成就高，有着文人的矛盾',
+      character_achievements: '主盟文坛数十年，与柳如是的爱情传为佳话'
     },
     {
-      character_name: '康熙',
-      character_background: '清朝第四位皇帝，在位61年，开创"康乾盛世"',
-      character_personality: '勤政爱民，博学多才，善于用人，有着明君的风范',
-      character_achievements: '平定三藩，收复台湾，开创康乾盛世'
+      character_name: '吴伟业',
+      character_background: '明末清初诗人，"梅村体"创始人，"江左三大家"之一',
+      character_personality: '才华横溢，内心矛盾，诗风独特，有着遗民的复杂心态',
+      character_achievements: '创立"梅村体"，代表作《圆圆曲》，反映时代变迁'
     },
     {
-      character_name: '乾隆',
-      character_background: '清朝第六位皇帝，"康乾盛世"的重要缔造者',
-      character_personality: '文武双全，爱好文艺，自信满满，有着盛世君主的气度',
-      character_achievements: '继续康乾盛世，编纂《四库全书》，文治武功并重'
+      character_name: '朱彝尊',
+      character_background: '清代词人、学者，"浙西词派"领袖，考据学家',
+      character_personality: '学问渊博，治学严谨，词风清雅，有着学者的风范',
+      character_achievements: '开创"浙西词派"，精于考据，著《词综》等'
     },
     {
-      character_name: '纪晓岚',
-      character_background: '清代文学家、官员，《四库全书》总纂官，以机智幽默著称',
-      character_personality: '机智幽默，博学多才，善于应对，有着文人的风趣',
-      character_achievements: '主持编纂《四库全书》，留下众多机智对联和故事'
+      character_name: '纳兰性德',
+      character_background: '清代词人，"满清第一词人"，康熙朝重臣之子',
+      character_personality: '多愁善感，才华横溢，性格忧郁，有着贵公子的气质',
+      character_achievements: '创作《饮水词》，词风清丽哀婉，被誉为"清代第一词人"'
     },
     {
-      character_name: '林则徐',
-      character_background: '清代政治家，虎门销烟的民族英雄，"开眼看世界第一人"',
-      character_personality: '爱国忧民，刚正不阿，开明进步，有着民族英雄的气概',
-      character_achievements: '虎门销烟，抵抗外侵，被誉为民族英雄'
+      character_name: '王士祯',
+      character_background: '清代诗人、文学家，"神韵说"倡导者，"一代诗宗"',
+      character_personality: '风雅温润，追求意境，学识渊博，有着诗人的雅致',
+      character_achievements: '倡导"神韵说"，主盟诗坛，著《带经堂诗话》'
     },
     {
-      character_name: '曾国藩',
-      character_background: '清代政治家、军事家、理学家，湘军创立者',
-      character_personality: '严于律己，勤奋好学，善于用人，有着儒家君子的品格',
-      character_achievements: '创建湘军，平定太平天国，推动洋务运动'
+      character_name: '查慎行',
+      character_background: '清代诗人，"查初白"，浙西诗派代表',
+      character_personality: '性格温和，诗风清淡，学问深厚，有着江南文人的秀雅',
+      character_achievements: '诗风清新自然，与朱彝尊并称"朱查"，影响清代诗坛'
     },
     {
-      character_name: '左宗棠',
-      character_background: '清代政治家、军事家，收复新疆的民族英雄',
-      character_personality: '意志坚强，爱国忧民，军事才能出众，有着军事家的魄力',
-      character_achievements: '收复新疆，维护国家统一，推动西北开发'
-    },
-    {
-      character_name: '李鸿章',
-      character_background: '清代政治家、外交家，洋务运动重要人物',
-      character_personality: '务实能干，善于外交，适应时势，有着政治家的灵活性',
-      character_achievements: '推动洋务运动，创办近代工业，参与外交谈判'
+      character_name: '厉鹗',
+      character_background: '清代诗人、词人，"樊榭山人"，浙西词派重要人物',
+      character_personality: '清高孤傲，学问精深，不慕荣利，有着隐士的风骨',
+      character_achievements: '词学造诣深厚，著《宋诗纪事》，精于文献整理'
     }
   ];
 
