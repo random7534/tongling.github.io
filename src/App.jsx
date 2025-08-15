@@ -312,11 +312,24 @@ const App = () => {
   ];
 
   const [currentCharacter, setCurrentCharacter] = useState(null);
+  const [lastCharacterName, setLastCharacterName] = useState(null);
 
   const handleStartGame = () => {
-    // 从50位中国古代名人中随机选择一个角色
-    const randomIndex = Math.floor(Math.random() * hiddenCharacters.length);
-    setCurrentCharacter(hiddenCharacters[randomIndex]);
+    // 从50位中国古代名人中随机选择一个角色，确保不与上一次重复
+    let availableCharacters = hiddenCharacters;
+    
+    // 如果有上一次的角色，则从可选列表中排除
+    if (lastCharacterName) {
+      availableCharacters = hiddenCharacters.filter(
+        character => character.character_name !== lastCharacterName
+      );
+    }
+    
+    const randomIndex = Math.floor(Math.random() * availableCharacters.length);
+    const selectedCharacter = availableCharacters[randomIndex];
+    
+    setCurrentCharacter(selectedCharacter);
+    setLastCharacterName(selectedCharacter.character_name);
     setGameStarted(true);
     setGameCompleted(false);
   };
@@ -329,6 +342,7 @@ const App = () => {
     setGameStarted(false);
     setCurrentCharacter(null);
     setGameCompleted(false);
+    // 注意：不清除lastCharacterName，保持防重复机制
   };
 
   return (
