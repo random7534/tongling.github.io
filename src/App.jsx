@@ -2,15 +2,83 @@ import React, { useState, useEffect } from 'react';
 import ChatInterface from './components/ChatInterface';
 import GameHeader from './components/GameHeader';
 import GameStart from './components/GameStart';
+import DifficultySelector from './components/DifficultySelector';
 
 const App = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameCompleted, setGameCompleted] = useState(false);
+  const [difficultySelected, setDifficultySelected] = useState(false);
+  const [selectedDifficulty, setSelectedDifficulty] = useState('');
 
-  // 后台预设的随机角色池 - 50位相对不常见但有历史关联的中国古代人物
-  const hiddenCharacters = [
-    {
-      character_name: '曹丕',
+  // 按难度分类的角色池
+  const charactersByDifficulty = {
+    // 小学生难度 - 熟悉的历史名人
+    elementary: [
+      {
+        character_name: '李白',
+        character_background: '唐代伟大诗人，"诗仙"，浪漫主义诗歌的代表人物',
+        character_personality: '豪放不羁，才华横溢，热爱自由，有着诗人的浪漫情怀',
+        character_achievements: '创作《静夜思》《将进酒》等千古名篇，被誉为"诗仙"'
+      },
+      {
+        character_name: '杜甫',
+        character_background: '唐代伟大诗人，"诗圣"，现实主义诗歌的代表人物',
+        character_personality: '忧国忧民，严谨治学，关心社会，有着文人的责任感',
+        character_achievements: '创作《春望》《茅屋为秋风所破歌》等名作，被誉为"诗圣"'
+      },
+      {
+        character_name: '诸葛亮',
+        character_background: '三国时期蜀汉丞相，杰出的政治家、军事家、发明家',
+        character_personality: '智慧超群，忠诚不二，鞠躬尽瘁，有着政治家的远见',
+        character_achievements: '辅佐刘备建立蜀汉，七擒孟获，六出祁山，发明木牛流马'
+      },
+      {
+        character_name: '苏轼',
+        character_background: '北宋文学家，"唐宋八大家"之一，豪放派词人代表',
+        character_personality: '豁达乐观，才华横溢，多才多艺，有着文人的洒脱',
+        character_achievements: '创作《水调歌头》《念奴娇·赤壁怀古》等名篇，诗词书画皆精'
+      },
+      {
+        character_name: '曹操',
+        character_background: '东汉末年政治家、军事家、文学家，魏国奠基者',
+        character_personality: '雄才大略，多疑善变，文武双全，有着枭雄的气魄',
+        character_achievements: '统一北方，建立魏国基业，著有《观沧海》等诗作'
+      },
+      {
+        character_name: '王羲之',
+        character_background: '东晋书法家，"书圣"，行书《兰亭序》作者',
+        character_personality: '风流倜傥，艺术天赋极高，追求完美，有着艺术家的气质',
+        character_achievements: '创作《兰亭序》，被誉为"天下第一行书"，开创书法新风'
+      },
+      {
+        character_name: '孔子',
+        character_background: '春秋时期思想家、教育家，儒家学派创始人',
+        character_personality: '温文尔雅，博学多才，有教无类，有着教育家的仁爱',
+        character_achievements: '创立儒家思想，编订《诗》《书》《礼》《乐》《易》《春秋》'
+      },
+      {
+        character_name: '孟子',
+        character_background: '战国时期思想家、教育家，儒家学派代表人物',
+        character_personality: '刚正不阿，雄辩滔滔，仁政理想，有着思想家的执着',
+        character_achievements: '发展儒家思想，提出"民贵君轻"，著有《孟子》'
+      },
+      {
+        character_name: '司马迁',
+        character_background: '西汉史学家、文学家，《史记》作者',
+        character_personality: '坚韧不拔，史学严谨，文笔优美，有着史学家的执着',
+        character_achievements: '著《史记》，开创纪传体史书先河，被誉为"史家之绝唱"'
+      },
+      {
+        character_name: '屈原',
+        character_background: '战国时期楚国诗人、政治家，中国浪漫主义文学奠基人',
+        character_personality: '忠君爱国，才华横溢，性格刚烈，有着诗人的理想主义',
+        character_achievements: '创作《离骚》《九歌》等楚辞名篇，端午节纪念人物'
+      }
+    ],
+    // 成年人难度 - 有一定知名度的人物
+    adult: [
+      {
+        character_name: '曹丕',
       character_background: '三国时期魏国开国皇帝，曹操长子，文学家，建安文学代表人物',
       character_personality: '聪明多疑，文学才华出众，政治手腕高超，有着帝王的威严',
       character_achievements: '建立魏朝，推行九品中正制，著有《典论·论文》，开创文学批评先河'
@@ -303,30 +371,94 @@ const App = () => {
       character_personality: '性格温和，诗风清淡，学问深厚，有着江南文人的秀雅',
       character_achievements: '诗风清新自然，与朱彝尊并称"朱查"，影响清代诗坛'
     },
-    {
-      character_name: '厉鹗',
-      character_background: '清代诗人、词人，"樊榭山人"，浙西词派重要人物',
-      character_personality: '清高孤傲，学问精深，不慕荣利，有着隐士的风骨',
-      character_achievements: '词学造诣深厚，著《宋诗纪事》，精于文献整理'
-    }
-  ];
+    ],
+    // 老学究难度 - 相对冷门的历史人物
+    scholar: [
+      {
+        character_name: '朱彝尊',
+        character_background: '清代词人、学者，"浙西词派"领袖，考据学家',
+        character_personality: '学问渊博，治学严谨，词风清雅，有着学者的风范',
+        character_achievements: '开创"浙西词派"，精于考据，著《词综》等'
+      },
+      {
+        character_name: '查慎行',
+        character_background: '清代诗人，"查初白"，浙西诗派代表',
+        character_personality: '性格温和，诗风清淡，学问深厚，有着江南文人的秀雅',
+        character_achievements: '诗风清新自然，与朱彝尊并称"朱查"，影响清代诗坛'
+      },
+      {
+        character_name: '厉鹗',
+        character_background: '清代诗人、词人，"樊榭山人"，浙西词派重要人物',
+        character_personality: '清高孤傲，学问精深，不慕荣利，有着隐士的风骨',
+        character_achievements: '词学造诣深厚，著《宋诗纪事》，精于文献整理'
+      },
+      {
+        character_name: '侯方域',
+        character_background: '明末清初文学家，"明末四公子"之一，与李香君的爱情故事',
+        character_personality: '风流倜傥，才华横溢，重情重义，有着文人的浪漫',
+        character_achievements: '文学才华出众，与李香君的爱情被传为佳话'
+      },
+      {
+        character_name: '钱谦益',
+        character_background: '明末清初文学家，"虞山诗派"领袖，柳如是之夫',
+        character_personality: '学识渊博，但品格复杂，文学成就高，有着文人的矛盾',
+        character_achievements: '主盟文坛数十年，与柳如是的爱情传为佳话'
+      },
+      {
+        character_name: '吴伟业',
+        character_background: '明末清初诗人，"梅村体"创始人，"江左三大家"之一',
+        character_personality: '才华横溢，内心矛盾，诗风独特，有着遗民的复杂心态',
+        character_achievements: '创立"梅村体"，代表作《圆圆曲》，反映时代变迁'
+      },
+      {
+        character_name: '辜鸿铭',
+        character_background: '近代学者、翻译家，精通多国语言的"文化怪杰"',
+        character_personality: '学贯中西，性格怪异，文化保守，有着文人的执拗',
+        character_achievements: '翻译《论语》《中庸》等经典，向西方介绍中国文化'
+      },
+      {
+        character_name: '黄遵宪',
+        character_background: '近代诗人、外交家，"诗界革命"倡导者',
+        character_personality: '开明进步，才华横溢，外交经验丰富，有着诗人的敏感',
+        character_achievements: '创作《人境庐诗草》，推动诗歌革新，记录时代变迁'
+      },
+      {
+        character_name: '丘逢甲',
+        character_background: '近代诗人、教育家，台湾抗日志士',
+        character_personality: '爱国热忱，文学才华出众，教育理念先进，有着志士的气节',
+        character_achievements: '领导台湾抗日，创办新式学校，诗作反映民族情怀'
+      },
+      {
+        character_name: '夏完淳',
+        character_background: '明末少年英雄，抗清志士，17岁就义',
+        character_personality: '少年老成，忠贞不屈，文学天赋极高，有着少年的纯真',
+        character_achievements: '年少抗清，诗文并茂，体现民族气节和少年英雄气概'
+      }
+    ]
+  };
 
   const [currentCharacter, setCurrentCharacter] = useState(null);
   const [lastCharacterName, setLastCharacterName] = useState(null);
 
+  const handleSelectDifficulty = (difficulty) => {
+    setSelectedDifficulty(difficulty);
+    setDifficultySelected(true);
+  };
+
   const handleStartGame = () => {
-    // 从50位中国古代名人中随机选择一个角色，确保不与上一次重复
-    let availableCharacters = hiddenCharacters;
+    // 根据选择的难度获取对应的角色池
+    const availableCharacters = charactersByDifficulty[selectedDifficulty] || charactersByDifficulty.adult;
     
     // 如果有上一次的角色，则从可选列表中排除
+    let filteredCharacters = availableCharacters;
     if (lastCharacterName) {
-      availableCharacters = hiddenCharacters.filter(
+      filteredCharacters = availableCharacters.filter(
         character => character.character_name !== lastCharacterName
       );
     }
     
-    const randomIndex = Math.floor(Math.random() * availableCharacters.length);
-    const selectedCharacter = availableCharacters[randomIndex];
+    const randomIndex = Math.floor(Math.random() * filteredCharacters.length);
+    const selectedCharacter = filteredCharacters[randomIndex];
     
     setCurrentCharacter(selectedCharacter);
     setLastCharacterName(selectedCharacter.character_name);
@@ -342,6 +474,8 @@ const App = () => {
     setGameStarted(false);
     setCurrentCharacter(null);
     setGameCompleted(false);
+    setDifficultySelected(false);
+    setSelectedDifficulty('');
     // 注意：不清除lastCharacterName，保持防重复机制
   };
 
@@ -350,8 +484,17 @@ const App = () => {
       <div className="container mx-auto px-4 py-6 max-w-4xl">
         <GameHeader />
         
-        {!gameStarted ? (
-          <GameStart onStartGame={handleStartGame} />
+        {!difficultySelected ? (
+          <DifficultySelector 
+            onSelectDifficulty={handleSelectDifficulty}
+            selectedDifficulty={selectedDifficulty}
+          />
+        ) : !gameStarted ? (
+          <GameStart 
+            onStartGame={handleStartGame} 
+            selectedDifficulty={selectedDifficulty}
+            onBack={() => setDifficultySelected(false)}
+          />
         ) : (
           <ChatInterface 
             gameConfig={currentCharacter}
