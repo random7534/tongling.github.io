@@ -119,6 +119,154 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // 文字换行函数
+  const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
+    const words = text.split(' ');
+    let line = '';
+    let currentY = y;
+
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + ' ';
+      const metrics = context.measureText(testLine);
+      const testWidth = metrics.width;
+      
+      if (testWidth > maxWidth && n > 0) {
+        context.fillText(line, x, currentY);
+        line = words[n] + ' ';
+        currentY += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    context.fillText(line, x, currentY);
+  };
+
+  // 生成分享图片
+  const generateShareImage = () => {
+    // 计算用户消息次数（排除初始AI消息）
+    const userMessageCount = messages.filter(msg => msg.type === 'user').length;
+    
+    // 获取最后一轮对话（最后一个用户消息和对应的AI回复）
+    const userMessages = messages.filter(msg => msg.type === 'user');
+    const lastUserMessage = userMessages[userMessages.length - 1];
+    const lastUserMessageIndex = messages.findIndex(msg => msg.id === lastUserMessage.id);
+    const lastAiMessage = messages[lastUserMessageIndex + 1];
+
+    // 创建canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // 设置canvas尺寸为正方形
+    const size = 800;
+    canvas.width = size;
+    canvas.height = size;
+
+    // 设置背景
+    const gradient = ctx.createLinearGradient(0, 0, 0, size);
+    gradient.addColorStop(0, '#1a1a2e');
+    gradient.addColorStop(0.5, '#16213e');
+    gradient.addColorStop(1, '#0f3460');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+
+    // 设置字体样式
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+
+    // 标题
+    ctx.font = 'bold 32px Arial';
+    ctx.fillText('🎉 通灵寻踪成功！', size/2, 60);
+
+    // 成就文字
+    ctx.font = 'bold 24px Arial';
+    ctx.fillStyle = '#ffd700';
+    ctx.fillText(`我 ${userMessageCount} 次就猜出了AI背后的历史名人是`, size/2, 120);
+    
+    ctx.font = 'bold 28px Arial';
+    ctx.fillStyle = '#ff6b6b';
+    ctx.fillText(`${gameConfig.character_name}`, size/2, 160);
+    
+    ctx.font = '20px Arial';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('你也来猜猜看吧！', size/2, 200);
+
+    // 分割线
+    ctx.strokeStyle = '#ffd700';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(50, 230);
+    ctx.lineTo(size - 50, 230);
+    ctx.stroke();
+
+    // 最后一轮对话标题
+    ctx.font = 'bold 18px Arial';
+    ctx.fillStyle = '#ffd700';
+    ctx.fillText('最后一轮对话：', size/2, 270);
+
+    // 用户消息
+    ctx.font = '16px Arial';
+    ctx.fillStyle = '#87ceeb';
+    ctx.textAlign = 'left';
+    const userText = `玩家：${lastUserMessage?.content || ''}`;
+    wrapText(ctx, userText, 50, 300, size - 100, 20);
+
+    // AI回复
+    ctx.fillStyle = '#98fb98';
+    const aiText = `AI：${lastAiMessage?.content || ''}`;
+    wrapText(ctx, aiText, 50, 360, size - 100, 20);
+
+    // 二维码区域
+    const qrSize = 120;
+    const qrX = size/2 - qrSize/2;
+    const qrY = size - qrSize - 80;
+    
+    // 二维码背景
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+
+    // 二维码URL配置（用户可以在这里填充自己的二维码图片URL）
+    const qrCodeUrl = 'data:image/png;base64,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';
+    
+    // 加载并绘制二维码
+    const qrImage = new Image();
+    qrImage.onload = () => {
+      ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
+      
+      // 二维码说明
+      ctx.font = '14px Arial';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText('扫码体验通灵寻踪', size/2, size - 30);
+      
+      // 下载图片
+      const link = document.createElement('a');
+      link.download = `通灵寻踪-${gameConfig.character_name}-${userMessageCount}次成功.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+    };
+    
+    qrImage.onerror = () => {
+      // 如果二维码加载失败，直接绘制占位符文字
+      ctx.font = '12px Arial';
+      ctx.fillStyle = '#000000';
+      ctx.textAlign = 'center';
+      ctx.fillText('二维码', qrX + qrSize/2, qrY + qrSize/2);
+      
+      // 二维码说明
+      ctx.font = '14px Arial';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('扫码体验通灵寻踪', size/2, size - 30);
+      
+      // 下载图片
+      const link = document.createElement('a');
+      link.download = `通灵寻踪-${gameConfig.character_name}-${userMessageCount}次成功.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+    };
+    
+    qrImage.src = qrCodeUrl;
+  };
+
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading || !chatClient) return;
 
@@ -337,13 +485,22 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
               <i className="fas fa-star mr-2"></i>
               恭喜！你成功帮助灵魂获得了解脱
             </div>
-            <button
-              onClick={onRestart}
-              className="px-6 py-3 bg-gradient-to-r from-spirit-gold to-yellow-500 text-purple-900 font-bold rounded-xl hover:from-yellow-400 hover:to-spirit-gold transform hover:scale-105 transition-all"
-            >
-              <i className="fas fa-redo mr-2"></i>
-              开始新的通灵
-            </button>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={generateShareImage}
+                className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl hover:from-green-400 hover:to-emerald-500 transform hover:scale-105 transition-all flex items-center space-x-2"
+              >
+                <i className="fas fa-share-alt"></i>
+                <span>分享成就</span>
+              </button>
+              <button
+                onClick={onRestart}
+                className="px-6 py-3 bg-gradient-to-r from-spirit-gold to-yellow-500 text-purple-900 font-bold rounded-xl hover:from-yellow-400 hover:to-spirit-gold transform hover:scale-105 transition-all"
+              >
+                <i className="fas fa-redo mr-2"></i>
+                开始新的通灵
+              </button>
+            </div>
           </div>
         ) : (
           <div className="flex space-x-3">
