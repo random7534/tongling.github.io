@@ -146,11 +146,20 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
     // 计算用户消息次数（排除初始AI消息）
     const userMessageCount = messages.filter(msg => msg.type === 'user').length;
     
-    // 获取最后一轮对话（最后一个用户消息和对应的AI回复）
+    // 获取倒数三次对话（6句话）
     const userMessages = messages.filter(msg => msg.type === 'user');
-    const lastUserMessage = userMessages[userMessages.length - 1];
-    const lastUserMessageIndex = messages.findIndex(msg => msg.id === lastUserMessage.id);
-    const lastAiMessage = messages[lastUserMessageIndex + 1];
+    const conversationPairs = [];
+    
+    // 获取最后3轮对话
+    for (let i = Math.max(0, userMessages.length - 3); i < userMessages.length; i++) {
+      const userMsg = userMessages[i];
+      const userMsgIndex = messages.findIndex(msg => msg.id === userMsg.id);
+      const aiMsg = messages[userMsgIndex + 1];
+      
+      if (userMsg && aiMsg) {
+        conversationPairs.push({ user: userMsg, ai: aiMsg });
+      }
+    }
 
     // 创建canvas
     const canvas = document.createElement('canvas');
@@ -161,68 +170,115 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
     canvas.width = size;
     canvas.height = size;
 
-    // 设置背景
-    const gradient = ctx.createLinearGradient(0, 0, 0, size);
-    gradient.addColorStop(0, '#1a1a2e');
-    gradient.addColorStop(0.5, '#16213e');
-    gradient.addColorStop(1, '#0f3460');
+    // 设置神秘的通灵背景
+    const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+    gradient.addColorStop(0, '#1a0033');
+    gradient.addColorStop(0.3, '#2d1b69');
+    gradient.addColorStop(0.6, '#1a0033');
+    gradient.addColorStop(1, '#000000');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, size, size);
 
-    // 设置字体样式
+    // 添加星空效果
     ctx.fillStyle = '#ffffff';
+    for (let i = 0; i < 50; i++) {
+      const x = Math.random() * size;
+      const y = Math.random() * size;
+      const radius = Math.random() * 2;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 添加神秘光晕效果
+    const glowGradient = ctx.createRadialGradient(size/2, 100, 0, size/2, 100, 200);
+    glowGradient.addColorStop(0, 'rgba(255, 215, 0, 0.3)');
+    glowGradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+    ctx.fillStyle = glowGradient;
+    ctx.fillRect(0, 0, size, size);
+
+    // 设置字体样式
     ctx.textAlign = 'center';
 
-    // 标题
-    ctx.font = 'bold 32px Arial';
-    ctx.fillText('🎉 通灵寻踪成功！', size/2, 60);
+    // 神秘标题
+    ctx.font = 'bold 42px serif';
+    ctx.fillStyle = '#ffd700';
+    ctx.shadowColor = '#ffd700';
+    ctx.shadowBlur = 10;
+    ctx.fillText('✨ 通灵寻踪 ✨', size/2, 60);
+    ctx.shadowBlur = 0;
+
+    // 副标题
+    ctx.font = 'italic 24px serif';
+    ctx.fillStyle = '#e6e6fa';
+    ctx.fillText('灵魂的秘密已被揭开', size/2, 90);
 
     // 成就文字
-    ctx.font = 'bold 24px Arial';
+    ctx.font = 'bold 26px serif';
     ctx.fillStyle = '#ffd700';
-    ctx.fillText(`我 ${userMessageCount} 次就猜出了AI背后的历史名人是`, size/2, 120);
+    ctx.fillText(`我仅用 ${userMessageCount} 次对话`, size/2, 140);
     
-    ctx.font = 'bold 28px Arial';
+    ctx.font = 'bold 30px serif';
     ctx.fillStyle = '#ff6b6b';
-    ctx.fillText(`${gameConfig.character_name}`, size/2, 160);
+    ctx.shadowColor = '#ff6b6b';
+    ctx.shadowBlur = 8;
+    ctx.fillText(`就猜出了 ${gameConfig.character_name}`, size/2, 180);
+    ctx.shadowBlur = 0;
     
-    ctx.font = '20px Arial';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText('你也来猜猜看吧！', size/2, 200);
+    ctx.font = '22px serif';
+    ctx.fillStyle = '#e6e6fa';
+    ctx.fillText('你也来挑战通灵之谜吧！', size/2, 220);
 
-    // 分割线
+    // 装饰性分割线
     ctx.strokeStyle = '#ffd700';
     ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
     ctx.beginPath();
-    ctx.moveTo(50, 230);
-    ctx.lineTo(size - 50, 230);
+    ctx.moveTo(80, 250);
+    ctx.lineTo(size - 80, 250);
     ctx.stroke();
+    ctx.setLineDash([]);
 
-    // 最后一轮对话标题
-    ctx.font = 'bold 18px Arial';
+    // 对话标题
+    ctx.font = 'bold 22px serif';
     ctx.fillStyle = '#ffd700';
-    ctx.fillText('最后一轮对话：', size/2, 270);
+    ctx.fillText('🔮 通灵对话记录 🔮', size/2, 280);
 
-    // 用户消息
-    ctx.font = '16px Arial';
-    ctx.fillStyle = '#87ceeb';
+    // 绘制对话内容
+    let currentY = 310;
     ctx.textAlign = 'left';
-    const userText = `玩家：${lastUserMessage?.content || ''}`;
-    wrapText(ctx, userText, 50, 300, size - 100, 20);
+    ctx.font = '18px Arial';
+    
+    conversationPairs.forEach((pair, index) => {
+      // 用户消息
+      ctx.fillStyle = '#87ceeb';
+      const userText = `👤 ${pair.user.content.substring(0, 40)}${pair.user.content.length > 40 ? '...' : ''}`;
+      ctx.fillText(userText, 60, currentY);
+      currentY += 30;
+      
+      // AI消息
+      ctx.fillStyle = '#98fb98';
+      const aiText = `🔮 ${pair.ai.content.substring(0, 40)}${pair.ai.content.length > 40 ? '...' : ''}`;
+      ctx.fillText(aiText, 60, currentY);
+      currentY += 40;
+    });
 
-    // AI回复
-    ctx.fillStyle = '#98fb98';
-    const aiText = `AI：${lastAiMessage?.content || ''}`;
-    wrapText(ctx, aiText, 50, 360, size - 100, 20);
-
-    // 二维码区域
-    const qrSize = 120;
+    // 二维码区域（调大尺寸）
+    const qrSize = 180;
     const qrX = size/2 - qrSize/2;
-    const qrY = size - qrSize - 80;
+    const qrY = size - qrSize - 60;
+    
+    // 二维码神秘边框
+    ctx.strokeStyle = '#ffd700';
+    ctx.lineWidth = 3;
+    ctx.shadowColor = '#ffd700';
+    ctx.shadowBlur = 10;
+    ctx.strokeRect(qrX - 5, qrY - 5, qrSize + 10, qrSize + 10);
+    ctx.shadowBlur = 0;
     
     // 二维码背景
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+    ctx.fillRect(qrX, qrY, qrSize, qrSize);
 
     // 二维码URL配置（用户可以在这里填充自己的二维码图片URL）
     const qrCodeUrl = 'data:image/png;base64,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';
@@ -233,38 +289,128 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
       ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
       
       // 二维码说明
-      ctx.font = '14px Arial';
-      ctx.fillStyle = '#ffffff';
+      ctx.font = '18px serif';
+      ctx.fillStyle = '#ffd700';
       ctx.textAlign = 'center';
-      ctx.fillText('扫码体验通灵寻踪', size/2, size - 30);
+      ctx.fillText('扫码开启你的通灵之旅', size/2, size - 20);
       
-      // 下载图片
-      const link = document.createElement('a');
-      link.download = `通灵寻踪-${gameConfig.character_name}-${userMessageCount}次成功.png`;
-      link.href = canvas.toDataURL();
-      link.click();
+      // 显示弹窗而非下载
+      showImageModal(canvas);
     };
     
     qrImage.onerror = () => {
-      // 如果二维码加载失败，直接绘制占位符文字
-      ctx.font = '12px Arial';
+      // 如果二维码加载失败，直接绘制占位符
+      ctx.font = '16px Arial';
       ctx.fillStyle = '#000000';
       ctx.textAlign = 'center';
       ctx.fillText('二维码', qrX + qrSize/2, qrY + qrSize/2);
       
       // 二维码说明
-      ctx.font = '14px Arial';
-      ctx.fillStyle = '#ffffff';
-      ctx.fillText('扫码体验通灵寻踪', size/2, size - 30);
+      ctx.font = '18px serif';
+      ctx.fillStyle = '#ffd700';
+      ctx.fillText('扫码开启你的通灵之旅', size/2, size - 20);
       
-      // 下载图片
-      const link = document.createElement('a');
-      link.download = `通灵寻踪-${gameConfig.character_name}-${userMessageCount}次成功.png`;
-      link.href = canvas.toDataURL();
-      link.click();
+      // 显示弹窗而非下载
+      showImageModal(canvas);
     };
     
     qrImage.src = qrCodeUrl;
+  };
+
+  // 显示图片弹窗
+  const showImageModal = (canvas) => {
+    // 创建弹窗容器
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      backdrop-filter: blur(5px);
+    `;
+
+    // 创建内容容器
+    const content = document.createElement('div');
+    content.style.cssText = `
+      background: linear-gradient(135deg, #1a0033, #2d1b69);
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px solid #ffd700;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      text-align: center;
+      max-width: 90%;
+      max-height: 90%;
+    `;
+
+    // 创建图片元素
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL();
+    img.style.cssText = `
+      max-width: 100%;
+      max-height: 400px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    `;
+
+    // 创建提示文字
+    const text = document.createElement('p');
+    text.textContent = '右键点击图片选择"保存图片"来保存到本地';
+    text.style.cssText = `
+      color: #ffd700;
+      font-size: 16px;
+      margin: 10px 0;
+      font-family: serif;
+    `;
+
+    // 创建关闭按钮
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '关闭';
+    closeBtn.style.cssText = `
+      background: linear-gradient(45deg, #ffd700, #ffed4e);
+      color: #1a0033;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+    `;
+
+    closeBtn.onmouseover = () => {
+      closeBtn.style.transform = 'scale(1.05)';
+      closeBtn.style.boxShadow = '0 0 15px rgba(255, 215, 0, 0.6)';
+    };
+
+    closeBtn.onmouseout = () => {
+      closeBtn.style.transform = 'scale(1)';
+      closeBtn.style.boxShadow = 'none';
+    };
+
+    closeBtn.onclick = () => {
+      document.body.removeChild(modal);
+    };
+
+    // 点击背景关闭
+    modal.onclick = (e) => {
+      if (e.target === modal) {
+        document.body.removeChild(modal);
+      }
+    };
+
+    // 组装弹窗
+    content.appendChild(img);
+    content.appendChild(text);
+    content.appendChild(closeBtn);
+    modal.appendChild(content);
+    document.body.appendChild(modal);
   };
 
   const sendMessage = async () => {
