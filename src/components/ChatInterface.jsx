@@ -1,12 +1,80 @@
 /**
  * 聊天界面组件
  * 应用标识: 7b07f649-6197-421d-8513-a65e74792267
- * 功能: 实现与AI附身者的对话交互，使用OneDay Workflow SDK进行历史人物猜测
+ * 功能: 实现与AI附身者的对话交互，直接使用dify API进行历史人物猜测
  */
 import React, { useState, useEffect, useRef } from 'react';
-import { ChatClient } from '@ali/oneday-workflow-sdk';
 import MessageBubble from './MessageBubble';
 import TypingIndicator from './TypingIndicator';
+
+// 自定义dify客户端
+class DifyClient {
+  constructor(config) {
+    this.apiKey = config.headers.Authorization;
+    this.baseUrl = config.baseUrl;
+  }
+
+  async sendMessageStream(params, callbacks) {
+    const url = `${this.baseUrl}/chat-messages`;
+    
+    const requestBody = {
+      inputs: params.inputs || {},
+      query: params.query,
+      response_mode: params.response_mode || 'streaming',
+      user: params.user || 'anonymous',
+      ...(params.conversation_id && { conversation_id: params.conversation_id })
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6));
+              
+              if (data.event === 'message') {
+                callbacks.onMessage && callbacks.onMessage({ answer: data.answer });
+              } else if (data.event === 'message_end') {
+                callbacks.onMessageEnd && callbacks.onMessageEnd({
+                  conversation_id: data.conversation_id
+                });
+              }
+            } catch (e) {
+              console.warn('Failed to parse SSE data:', line);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Dify API error:', error);
+      callbacks.onError && callbacks.onError({ message: error.message });
+    }
+  }
+}
 
 const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted }) => {
   const [messages, setMessages] = useState([]);
@@ -18,12 +86,12 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    // 初始化聊天客户端
-    const client = new ChatClient({
+    // 初始化dify聊天客户端
+    const client = new DifyClient({
       headers: {
         Authorization: 'app-HcQlclUU29f9d8OsW2KRVAGm',
       },
-      baseUrl: 'http://43.139.185.136/v1',
+      baseUrl: 'https://43.139.185.136/v1',
     });
     setChatClient(client);
 
@@ -31,6 +99,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
     setConversationId(null);
     setIsFirstMessage(true);
     console.log('开始新游戏，角色:', gameConfig.character_name);
+    console.log('Dify连接配置 - API Key: app-HcQlclUU29f9d8OsW2KRVAGm, Base URL: https://43.139.185.136/v1');
 
     // 添加初始消息
     const initialMessage = {
@@ -40,7 +109,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
       timestamp: new Date()
     };
     setMessages([initialMessage]);
-  }, [gameConfig]);  // 添加gameConfig依赖，确保每次新游戏都创建新会话
+  }, [gameConfig]);
 
   useEffect(() => {
     scrollToBottom();
