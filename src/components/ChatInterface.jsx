@@ -91,7 +91,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
       headers: {
         Authorization: 'app-HcQlclUU29f9d8OsW2KRVAGm',
       },
-      baseUrl: 'https://43.139.185.136/v1',
+      baseUrl: 'http://43.139.185.136/v1',
     });
     setChatClient(client);
 
@@ -99,7 +99,7 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
     setConversationId(null);
     setIsFirstMessage(true);
     console.log('开始新游戏，角色:', gameConfig.character_name);
-    console.log('Dify连接配置 - API Key: app-HcQlclUU29f9d8OsW2KRVAGm, Base URL: https://43.139.185.136/v1');
+    console.log('Dify连接配置 - API Key: app-HcQlclUU29f9d8OsW2KRVAGm, Base URL: http://43.139.185.136/v1');
 
     // 添加初始消息
     const initialMessage = {
