@@ -21,9 +21,9 @@ const ChatInterface = ({ gameConfig, onGameComplete, onRestart, gameCompleted })
     // 初始化聊天客户端
     const client = new ChatClient({
       headers: {
-        Authorization: '7b07f649-6197-421d-8513-a65e74792267',
+        Authorization: 'app-HcQlclUU29f9d8OsW2KRVAGm',
       },
-      baseUrl: 'https://1d.alibaba-inc.com/api/proxy/workflow/v1',
+      baseUrl: 'http://43.139.185.136/v1',
     });
     setChatClient(client);
 
