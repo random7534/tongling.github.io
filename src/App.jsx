@@ -73,6 +73,138 @@ const App = () => {
         character_background: '战国时期楚国诗人、政治家，中国浪漫主义文学奠基人',
         character_personality: '忠君爱国，才华横溢，性格刚烈，有着诗人的理想主义',
         character_achievements: '创作《离骚》《九歌》等楚辞名篇，端午节纪念人物'
+      },
+      {
+        character_name: '岳飞',
+        character_background: '南宋抗金名将，民族英雄，精忠报国的典范',
+        character_personality: '忠诚爱国，武艺高强，刚正不阿，有着军人的血性',
+        character_achievements: '率领岳家军抗击金军，收复失地，留下"精忠报国"佳话'
+      },
+      {
+        character_name: '关羽',
+        character_background: '三国时期蜀汉名将，"武圣"，忠义的化身',
+        character_personality: '忠义双全，武艺超群，傲气凌人，有着武将的豪气',
+        character_achievements: '温酒斩华雄，过五关斩六将，被后世尊为"关公"'
+      },
+      {
+        character_name: '刘备',
+        character_background: '三国时期蜀汉开国皇帝，以仁德著称',
+        character_personality: '仁德宽厚，知人善任，坚韧不拔，有着君主的胸怀',
+        character_achievements: '三顾茅庐请诸葛亮，建立蜀汉政权，体现仁君风范'
+      },
+      {
+        character_name: '孙悟空',
+        character_background: '《西游记》主角，齐天大圣，神通广大的猴王',
+        character_personality: '机智勇敢，嫉恶如仇，顽皮好斗，有着英雄的正义感',
+        character_achievements: '大闹天宫，保护唐僧西天取经，降妖除魔'
+      },
+      {
+        character_name: '唐僧',
+        character_background: '《西游记》中的取经人，历史上的玄奘法师',
+        character_personality: '慈悲为怀，意志坚定，学识渊博，有着僧人的慈悲',
+        character_achievements: '西天取经，翻译佛经，传播佛法文化'
+      },
+      {
+        character_name: '包拯',
+        character_background: '北宋名臣，"包青天"，清正廉洁的典范',
+        character_personality: '刚正不阿，执法如山，清廉公正，有着清官的品格',
+        character_achievements: '断案如神，为民申冤，被誉为"包青天"'
+      },
+      {
+        character_name: '文天祥',
+        character_background: '南宋末年政治家、文学家，民族英雄',
+        character_personality: '忠贞不屈，文武双全，爱国如命，有着志士的气节',
+        character_achievements: '抗击元军，宁死不降，留下"人生自古谁无死"名句'
+      },
+      {
+        character_name: '郑和',
+        character_background: '明代航海家，七下西洋的船队统帅',
+        character_personality: '勇敢无畏，组织能力强，见识广博，有着探险家的精神',
+        character_achievements: '七下西洋，开辟海上丝绸之路，促进中外交流'
+      },
+      {
+        character_name: '武则天',
+        character_background: '中国历史上唯一的女皇帝，唐朝政治家',
+        character_personality: '聪明果断，手段高超，雄心勃勃，有着女强人的魄力',
+        character_achievements: '开创"贞观遗风"，发展科举制度，促进社会发展'
+      },
+      {
+        character_name: '秦始皇',
+        character_background: '中国历史上第一个皇帝，统一六国的君主',
+        character_personality: '雄才大略，严厉专制，志向远大，有着帝王的威严',
+        character_achievements: '统一六国，建立郡县制，修筑万里长城，统一文字货币'
+      },
+      {
+        character_name: '汉武帝',
+        character_background: '西汉第七位皇帝，开疆拓土的雄主',
+        character_personality: '雄心壮志，好大喜功，求贤若渴，有着明君的气度',
+        character_achievements: '开辟丝绸之路，设立太学，推行推恩令，开创汉朝盛世'
+      },
+      {
+        character_name: '唐太宗',
+        character_background: '唐朝第二位皇帝，开创"贞观之治"的明君',
+        character_personality: '英明睿智，虚怀若谷，善纳谏言，有着圣君的风范',
+        character_achievements: '开创贞观之治，完善科举制，促进民族融合'
+      },
+      {
+        character_name: '康熙',
+        character_background: '清朝第四位皇帝，在位61年的圣祖',
+        character_personality: '勤政爱民，学识渊博，胸怀宽广，有着盛世君主的气质',
+        character_achievements: '平定三藩，收复台湾，开创康乾盛世'
+      },
+      {
+        character_name: '乾隆',
+        character_background: '清朝第六位皇帝，"十全老人"',
+        character_personality: '文武双全，自信满满，爱好文艺，有着文治武功的帝王风范',
+        character_achievements: '继续康乾盛世，编纂《四库全书》，六下江南'
+      },
+      {
+        character_name: '朱元璋',
+        character_background: '明朝开国皇帝，从乞丐到皇帝的传奇人物',
+        character_personality: '坚韧不拔，疑心重重，勤政爱民，有着草根皇帝的特质',
+        character_achievements: '推翻元朝，建立明朝，整顿吏治，发展农业'
+      },
+      {
+        character_name: '成吉思汗',
+        character_background: '蒙古帝国创建者，世界历史上杰出的军事家',
+        character_personality: '勇猛无畏，善于用兵，胸怀大志，有着草原英雄的豪迈',
+        character_achievements: '统一蒙古各部，建立蒙古帝国，征服欧亚大陆'
+      },
+      {
+        character_name: '花木兰',
+        character_background: '古代巾帼英雄，代父从军的孝女',
+        character_personality: '勇敢坚强，孝顺父母，机智过人，有着女英雄的气概',
+        character_achievements: '女扮男装，代父从军，保家卫国，成为孝道典范'
+      },
+      {
+        character_name: '梁山伯',
+        character_background: '《梁山伯与祝英台》中的男主角，古代爱情故事人物',
+        character_personality: '纯真善良，专情痴情，文质彬彬，有着书生的温雅',
+        character_achievements: '与祝英台的爱情故事传颂千古，化蝶双飞成佳话'
+      },
+      {
+        character_name: '祝英台',
+        character_background: '《梁山伯与祝英台》中的女主角，古代爱情故事人物',
+        character_personality: '聪明伶俐，敢爱敢恨，追求自由，有着女性的独立精神',
+        character_achievements: '女扮男装求学，与梁山伯的爱情成为千古绝唱'
+      },
+      {
+        character_name: '白娘子',
+        character_background: '《白蛇传》中的女主角，善良的白蛇精',
+        character_personality: '温柔善良，深情专一，勇敢坚强，有着女性的柔情与刚毅',
+        character_achievements: '与许仙的人妖恋情，体现了爱情的伟大力量'
+      },
+      {
+        character_name: '许仙',
+        character_background: '《白蛇传》中的男主角，与白娘子相恋的书生',
+        character_personality: '善良纯朴，重情重义，有些软弱，有着普通人的真实',
+        character_achievements: '与白娘子的爱情故事，展现了人妖之间的真情'
+      },
+      {
+        character_name: '嫦娥',
+        character_background: '中国古代神话中的月宫仙女',
+        character_personality: '美丽动人，孤独寂寞，善良温柔，有着仙女的飘逸',
+        character_achievements: '奔月成仙，成为中秋节的象征，寄托了人们的美好愿望'
       }
     ],
     // 成年人难度 - 有一定知名度的人物
@@ -237,7 +369,7 @@ const App = () => {
       character_name: '袁枚',
       character_background: '清代诗人、文学家，"性灵派"代表，美食家',
       character_personality: '性情豪放，追求自由，热爱生活，有着文人的洒脱',
-      character_achievements: '倡导"性灵说"，著《随园诗话》《随园食单》'
+      character_achievements: '倡导"性灵说"，著《随园诗话》《随园食单}'
     },
     {
       character_name: '龚自珍',
@@ -273,7 +405,7 @@ const App = () => {
       character_name: '康有为',
       character_background: '近代思想家、政治家，维新运动领袖，"南海先生"',
       character_personality: '学识渊博，思想超前，组织能力强，有着改革家的魄力',
-      character_achievements: '发起公车上书，推动戊戌变法，著《大同书》'
+      character_achievements: '发起公车上书，推动戊戌变法，著《大同书}'
     },
     {
       character_name: '章太炎',
@@ -363,7 +495,7 @@ const App = () => {
       character_name: '王士祯',
       character_background: '清代诗人、文学家，"神韵说"倡导者，"一代诗宗"',
       character_personality: '风雅温润，追求意境，学识渊博，有着诗人的雅致',
-      character_achievements: '倡导"神韵说"，主盟诗坛，著《带经堂诗话》'
+      character_achievements: '倡导"神韵说"，主盟诗坛，著《带经堂诗话}'
     },
     {
       character_name: '查慎行',
@@ -433,6 +565,90 @@ const App = () => {
         character_background: '明末少年英雄，抗清志士，17岁就义',
         character_personality: '少年老成，忠贞不屈，文学天赋极高，有着少年的纯真',
         character_achievements: '年少抗清，诗文并茂，体现民族气节和少年英雄气概'
+      },
+      {
+        character_name: '陈子昂',
+        character_background: '唐代诗人，"前不见古人，后不见来者"作者',
+        character_personality: '豪放不羁，忧国忧民，才华横溢，有着诗人的孤傲',
+        character_achievements: '开创唐诗新风，代表作《登幽州台歌》，影响盛唐诗风'
+      },
+      {
+        character_name: '陶弘景',
+        character_background: '南朝梁代道教思想家、医药学家，"山中宰相"',
+        character_personality: '清高脱俗，学识渊博，淡泊名利，有着隐士的风骨',
+        character_achievements: '整理《神农本草经》，建立道教理论体系'
+      },
+      {
+        character_name: '葛洪',
+        character_background: '东晋道教理论家、医学家、炼丹术士',
+        character_personality: '博学多才，潜心修道，追求长生，有着方士的神秘',
+        character_achievements: '著《抱朴子》，发展道教理论，记录炼丹术'
+      },
+      {
+        character_name: '郦道元',
+        character_background: '北魏地理学家，《水经注》作者',
+        character_personality: '治学严谨，实地考察，文笔优美，有着学者的执着',
+        character_achievements: '著《水经注》，详细记录中国水系地理'
+      },
+      {
+        character_name: '贾思勰',
+        character_background: '北魏农学家，《齐民要术》作者',
+        character_personality: '实用主义，关心农业，经验丰富，有着农学家的务实',
+        character_achievements: '著《齐民要术》，总结农业生产经验'
+      },
+      {
+        character_name: '刘勰',
+        character_background: '南朝梁代文学理论家，《文心雕龙》作者',
+        character_personality: '理论深邃，文学造诣高，思维缜密，有着理论家的严谨',
+        character_achievements: '著《文心雕龙》，建立中国古代文学理论体系'
+      },
+      {
+        character_name: '钟嵘',
+        character_background: '南朝梁代文学批评家，《诗品》作者',
+        character_personality: '品评精准，见解独到，文学眼光敏锐，有着批评家的犀利',
+        character_achievements: '著《诗品》，评价汉魏六朝诗人，影响后世诗学'
+      },
+      {
+        character_name: '沈约',
+        character_background: '南朝梁代文学家、史学家，"永明体"创始人',
+        character_personality: '文学天赋高，追求声律，学问渊博，有着文人的精致',
+        character_achievements: '创立"永明体"，注重诗歌声律，影响唐诗发展'
+      },
+      {
+        character_name: '谢灵运',
+        character_background: '南朝宋代诗人，山水诗鼻祖',
+        character_personality: '才华横溢，性格傲慢，热爱自然，有着贵公子的任性',
+        character_achievements: '开创山水诗派，《登池上楼》等名作传世'
+      },
+      {
+        character_name: '谢朓',
+        character_background: '南朝齐代诗人，"小谢"，与谢灵运并称"二谢"',
+        character_personality: '才思敏捷，诗风清新，英年早逝，有着诗人的灵秀',
+        character_achievements: '诗风清丽，影响唐代诗人，李白曾赞其诗'
+      },
+      {
+        character_name: '鲍照',
+        character_background: '南朝宋代诗人，乐府诗革新者',
+        character_personality: '豪放不羁，愤世嫉俗，才华出众，有着寒门文人的不平',
+        character_achievements: '革新乐府诗，《拟行路难》等作品影响后世'
+      },
+      {
+        character_name: '庾信',
+        character_background: '南北朝文学家，"徐庾体"代表人物',
+        character_personality: '文采飞扬，内心矛盾，思乡情切，有着亡国文人的悲凉',
+        character_achievements: '诗文并茂，《哀江南赋》等作品感人至深'
+      },
+      {
+        character_name: '江淹',
+        character_background: '南朝梁代文学家，"江郎才尽"典故主人公',
+        character_personality: '早年才华横溢，晚年才思枯竭，有着文人的起伏',
+        character_achievements: '《恨赋》《别赋》等名作，"江郎才尽"成语由来'
+      },
+      {
+        character_name: '范缜',
+        character_background: '南朝齐梁间哲学家，无神论者',
+        character_personality: '思辨能力强，敢于质疑，理性思维，有着哲学家的勇气',
+        character_achievements: '著《神灭论》，批判佛教神学，发展唯物主义思想'
       }
     ]
   };
